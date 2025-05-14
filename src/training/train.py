@@ -4,6 +4,7 @@ import numpy as np
 from src.models.cnn_model import build_cnn
 from src.utils.preprocessing import parse_image_metadata, extract_features
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.metrics import Accuracy, MeanAbsoluteError
 
 from tensorflow.keras.callbacks import ModelCheckpoint
 import matplotlib.pyplot as plt
@@ -20,10 +21,12 @@ def train(dataset_path, save_path="outputs/models/best_model.h5"):
     )
 
     model = build_cnn()
+    
+
     model.compile(
-        loss=['binary_crossentropy', 'mae'],
+        loss=['binary_crossentropy', MeanAbsoluteError()],
         optimizer='adam',
-        metrics=['accuracy', 'mae']
+        metrics=[Accuracy(), MeanAbsoluteError()]
     )
 
     checkpoint = ModelCheckpoint(save_path, monitor='val_loss', save_best_only=True, verbose=1)
